@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F3A5F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>UNGA81 · Agenda da comitiva</title>
+<style>
+:root{
+  --navy:#1F3A5F; --navy-2:#2C4E7A; --ink:#1A1D21; --ink-2:#5B6470; --ink-3:#8A929D;
+  --paper:#FFFFFF; --paper-2:#F4F5F7; --line:#E2E5EA; --line-2:#CBD1D9;
+  --ok-bg:#E4F2EA; --ok:#1D6B45; --warn-bg:#FBF0DA; --warn:#8A5A0B; --bad-bg:#FBE6E6; --bad:#A03030;
+  --tint:#E8EEF6; --tint-ink:#1F3A5F;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper-2);color:var(--ink);font:15px/1.45 -apple-system,"SF Pro Text",Inter,"Segoe UI",Roboto,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+a{color:var(--navy)}
+.app{max-width:640px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+header.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line);padding:calc(10px + var(--sat)) 16px 0}
+.brand{display:flex;align-items:center;justify-content:space-between;height:40px}
+.brand h1{font-size:17px;font-weight:600;margin:0;letter-spacing:-.01em}
+.brand h1 span{color:var(--ink-3);font-weight:400}
+.who{display:flex;align-items:center;gap:6px;background:var(--tint);color:var(--tint-ink);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:600}
+.who svg{width:14px;height:14px}
+.days{display:flex;gap:4px;padding:8px 0 10px}
+.days button{flex:1;padding:7px 0 6px;border-radius:8px;font-size:12px;color:var(--ink-2);line-height:1.2}
+.days button b{display:block;font-size:15px;font-weight:600;color:var(--ink)}
+.days button.on{background:var(--navy);color:#fff}
+.days button.on b{color:#fff}
+.days button.today b::after{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:currentColor;margin-left:4px;vertical-align:middle}
+.views{display:flex;gap:6px;padding:0 0 10px;overflow-x:auto;scrollbar-width:none}
+.views::-webkit-scrollbar{display:none}
+.views button{white-space:nowrap;padding:6px 12px;border-radius:999px;border:1px solid var(--line-2);font-size:13px;color:var(--ink-2)}
+.views button.on{border-color:var(--navy);color:var(--navy);font-weight:600;background:var(--tint)}
+main{flex:1;padding:12px 16px calc(84px + var(--sab))}
+.empty{color:var(--ink-3);text-align:center;padding:48px 16px;font-size:14px}
+.section-h{font-size:12px;color:var(--ink-3);margin:14px 0 6px;font-weight:600}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.ev{display:flex;gap:12px;padding:12px 14px;border-top:1px solid var(--line);width:100%;text-align:left}
+.ev:first-child{border-top:0}
+.ev .t{width:44px;flex:none;font-size:12px;color:var(--ink-2);line-height:1.5;font-variant-numeric:tabular-nums}
+.ev .t b{display:block;color:var(--ink);font-weight:600;font-size:13px}
+.ev .b{flex:1;min-width:0}
+.ev .n{font-weight:600;line-height:1.3;margin:0 0 3px}
+.ev .m{font-size:12.5px;color:var(--ink-2);margin:0}
+.ev .m + .m{margin-top:2px}
+.ev.dim .n{font-weight:400;color:var(--ink-2)}
+.ev.dim .m{color:var(--ink-3)}
+.ev .chev{flex:none;align-self:center;color:var(--line-2)}
+.chips{display:inline-flex;gap:4px;flex-wrap:wrap;vertical-align:middle}
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:999px;background:var(--tint);color:var(--tint-ink);line-height:1.4}
+.chip.me{background:var(--navy);color:#fff}
+.st{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;font-weight:600}
+.st.ok{background:var(--ok-bg);color:var(--ok)} .st.warn{background:var(--warn-bg);color:var(--warn)} .st.bad{background:var(--bad-bg);color:var(--bad)} .st.neu{background:var(--paper-2);color:var(--ink-2)}
+.gap{margin:0 14px 0 70px;padding:6px 10px;border-radius:8px;font-size:12px;background:var(--paper-2);color:var(--ink-2);border-left:3px solid var(--line-2)}
+.gap.warn{background:var(--warn-bg);color:var(--warn);border-left-color:var(--warn)}
+.gap.bad{background:var(--bad-bg);color:var(--bad);border-left-color:var(--bad)}
+.gap + .ev{border-top:0;margin-top:6px}
+.gap{margin-top:6px}
+/* visão geral */
+.person{display:flex;gap:12px;padding:12px 14px;border-top:1px solid var(--line);text-align:left;width:100%}
+.person:first-child{border-top:0}
+.av{width:38px;height:38px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:var(--navy)}
+.av.free{background:var(--line-2);color:var(--ink-2)}
+.person .b{flex:1;min-width:0}
+.person .n{font-weight:600;margin:0 0 2px}
+.person .m{font-size:12.5px;color:var(--ink-2);margin:0}
+.alerts{display:flex;flex-direction:column;gap:6px}
+.alert{display:flex;gap:8px;align-items:flex-start;padding:9px 12px;border-radius:10px;font-size:13px;background:var(--warn-bg);color:var(--warn)}
+.alert.bad{background:var(--bad-bg);color:var(--bad)}
+.alert.neu{background:var(--paper);color:var(--ink-2);border:1px solid var(--line)}
+/* sheet */
+.veil{position:fixed;inset:0;background:rgba(20,26,34,.45);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+.veil.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--paper);border-radius:18px 18px 0 0;max-height:92vh;overflow:auto;transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);padding:8px 18px calc(20px + var(--sab));max-width:640px;margin:0 auto}
+.sheet.on{transform:none}
+.grip{width:36px;height:4px;border-radius:2px;background:var(--line-2);margin:4px auto 14px}
+.sh-top{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink-2);margin-bottom:8px}
+.sheet h2{font-size:18px;line-height:1.3;margin:0 0 4px;letter-spacing:-.01em}
+.sheet .org{color:var(--ink-2);font-size:13px;margin:0 0 14px}
+.row{display:flex;gap:10px;align-items:flex-start;margin:0 0 12px}
+.row svg{width:18px;height:18px;flex:none;color:var(--ink-3);margin-top:2px}
+.row p{margin:0}
+.row .s{font-size:12.5px;color:var(--ink-2)}
+.lbl{font-size:12px;color:var(--ink-3);font-weight:600;margin:16px 0 6px}
+.contact{display:flex;gap:10px;align-items:center;margin:0 0 8px}
+.contact .av{width:32px;height:32px;font-size:11px;background:var(--paper-2);color:var(--ink-2)}
+.contact p{margin:0}
+.contact .s{font-size:12.5px;color:var(--ink-2)}
+.next{background:var(--paper-2);border-radius:10px;padding:10px 12px}
+.next p{margin:0}
+.next .s{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+textarea{width:100%;min-height:76px;border:1px solid var(--line-2);border-radius:10px;padding:10px 12px;resize:vertical;background:var(--paper)}
+textarea:focus{outline:2px solid var(--navy);outline-offset:-1px;border-color:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:10px;font-weight:600;font-size:14px;background:var(--navy);color:#fff;width:100%;margin-top:10px}
+.btn.sec{background:var(--paper);color:var(--navy);border:1px solid var(--line-2)}
+.btn:disabled{opacity:.5}
+.err{font-size:12.5px;color:var(--bad);margin:6px 0 0}
+.okmsg{font-size:12.5px;color:var(--ok);margin:6px 0 0}
+.links{display:flex;gap:10px;margin-top:10px}
+.links a{flex:1;text-align:center;padding:9px;border:1px solid var(--line-2);border-radius:10px;font-size:13px;text-decoration:none;font-weight:600}
+/* notas */
+.note{padding:12px 14px;border-top:1px solid var(--line)}
+.note:first-child{border-top:0}
+.note .h{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);margin-bottom:4px}
+.note .x{margin:0;font-size:14px}
+.note .e{font-size:12.5px;color:var(--ink-2);margin:3px 0 0}
+table.fu{width:100%;border-collapse:collapse;font-size:13px}
+table.fu td,table.fu th{padding:8px 6px;border-top:1px solid var(--line);vertical-align:top;text-align:left}
+table.fu th{font-size:12px;color:var(--ink-3);font-weight:600;border-top:0}
+/* nav */
+nav.tabs{position:fixed;bottom:0;left:0;right:0;z-index:6;background:var(--paper);border-top:1px solid var(--line);display:flex;padding:6px 0 calc(6px + var(--sab));max-width:640px;margin:0 auto}
+nav.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;color:var(--ink-3);padding:4px 0}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button.on{color:var(--navy)}
+nav.tabs button b{font-weight:500}
+/* gate */
+.gate{position:fixed;inset:0;z-index:30;background:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:32px 28px;max-width:640px;margin:0 auto}
+.gate h1{font-size:26px;letter-spacing:-.02em;margin:0 0 4px}
+.gate p{color:var(--ink-2);margin:0 0 24px}
+.gate .opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border:1px solid var(--line-2);border-radius:12px;margin-bottom:8px;font-size:15px}
+.gate .opt .av{width:34px;height:34px;font-size:11px}
+.gate input{width:100%;padding:11px 12px;border:1px solid var(--line-2);border-radius:10px;margin-bottom:8px;letter-spacing:.2em}
+.toast{position:fixed;left:50%;bottom:calc(84px + var(--sab));transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 14px;border-radius:999px;font-size:13px;z-index:40;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1}
+.sim{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-2);margin:0 0 10px}
+.sim input{border:1px solid var(--line-2);border-radius:8px;padding:5px 8px;font-size:13px}
+.sim button{font-size:12.5px;color:var(--navy);font-weight:600}
+@media (prefers-reduced-motion:reduce){.sheet,.veil,.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <h1>UNGA81 <span>Nova Iorque</span></h1>
+      <button class="who" id="whoBtn" aria-label="Mudar de utilizador"></button>
+    </div>
+    <div class="days" id="days"></div>
+    <div class="views" id="views"></div>
+  </header>
+  <main id="main"></main>
+  <nav class="tabs" id="tabs"></nav>
+</div>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast"></div>
+<div class="gate" id="gate"></div>
+
+<script>
+/* ===================== CONFIGURAÇÃO ===================== */
+const CONFIG = {
+  API_URL: "",              // URL do Apps Script (fase 2). Vazio = usa os dados embutidos abaixo.
+  ACCESS_CODE: "",          // Código de acesso opcional. Vazio = sem código.
+  TZ: "America/New_York",
+  WEEK: ["2026-09-20","2026-09-21","2026-09-22","2026-09-23","2026-09-24","2026-09-25"],
+  WALK_M_PER_MIN: 75,       // ritmo a pé em Manhattan
+  DETOUR: 1.3               // factor de quadrícula sobre a distância em linha recta
+};
+const EMBEDDED = {"eventos": [{"ID": "EV001", "Data_inicio": "2026-09-20", "Data_fim": "2026-09-21", "Inicio": "", "Fim": "", "Hora_texto": "Todo o dia", "Organizacao": "UN Global Compact", "Evento": "Unstoppable Africa 2026: Powering Business, Scaling Economies, Shaping the Future", "Venue_ID": "MARQ", "Local_original": "New York Marriott Marquis", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV002", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-25", "Inicio": "", "Fim": "", "Hora_texto": "Todo o dia", "Organizacao": "Science Summit", "Evento": "Science Summit UNGA81", "Venue_ID": "NYC", "Local_original": "New York City", "Quem_vai": "BDT", "Objetivo": "", "Estado": "To review", "RSVP": "Open registration via event site.", "Prazo_registo": "No deadline published - registration available by session (checked 26 Aug 2026)", "Detalhes": "Multi-day summit running 21–25 September.", "Link": "Science Summit 2026", "Temas": "• Public health • Africa–EU partnership • Medical science • Scientific research", "Formato": "", "Notas_secretariado": "BDT registered"}, {"ID": "EV003", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-24", "Inicio": "", "Fim": "", "Hora_texto": "Todo o dia", "Organizacao": "Devex", "Evento": "Devex Impact House @ UNGA81", "Venue_ID": "NYC", "Local_original": "New York City", "Quem_vai": "GD, BDT", "Objetivo": "", "Estado": "To review", "RSVP": "Register via Devex event page.", "Prazo_registo": "Request an invite", "Detalhes": "UHC Pavilion (22 Sep) shaping the agenda for the 2027 UN High-Level Meeting on UHC. Speakers include Dr. Farida Al Hosani (GLIDE), Danielle Bayer (Evidence Action), Dr. Anu Kumar (Ipas), Victoria Sabula (AECF), Michelle Nunn (CARE USA), Janti Soeripto (Save the Children US).", "Link": "https://pages.devex.com/devex-at-unga-81.html", "Temas": "• Global development • Universal health coverage (UHC) • Development financing • AI and digital technologies • Resilience • Multilateralism", "Formato": "", "Notas_secretariado": "BDT/GD registered"}, {"ID": "EV004", "Data_inicio": "2026-09-20", "Data_fim": "2026-09-23", "Inicio": "", "Fim": "", "Hora_texto": "Todo o dia", "Organizacao": "Concordia", "Evento": "2026 Concordia Annual Summit", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV005", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-25", "Inicio": "", "Fim": "", "Hora_texto": "Todo o dia", "Organizacao": "The Economist", "Evento": "Economist Enterprise @ UNGA81", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV006", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-23", "Inicio": "", "Fim": "", "Hora_texto": "Todo o dia", "Organizacao": "Clinton Foundation", "Evento": "Clinton Global Initiative Annual Meeting", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV007", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-23", "Inicio": "", "Fim": "", "Hora_texto": "Todo o dia", "Organizacao": "Business Fights Poverty", "Evento": "Global Goals Summit 2026", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV008", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-23", "Inicio": "", "Fim": "", "Hora_texto": "Todo o dia", "Organizacao": "UN Global Compact", "Evento": "Leaders Summit 2026", "Venue_ID": "MARQ", "Local_original": "New York Marriott Marquis", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV009", "Data_inicio": "2026-09-20", "Data_fim": "2026-09-20", "Inicio": "10:00", "Fim": "14:15", "Hora_texto": "", "Organizacao": "Lincoln Center for the Performing Arts, Juilliard Extension, Lifetime Arts, Sing for Hope, and Dance for PD", "Evento": "Creative Aging: From Inspiration to Implementation", "Venue_ID": "BEALE", "Local_original": "Francesca Beale Theater", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV010", "Data_inicio": "2026-09-20", "Data_fim": "2026-09-20", "Inicio": "12:00", "Fim": "", "Hora_texto": "", "Organizacao": "UN Global Compact", "Evento": "2026 UN Private Sector Forum: Advancing a Clean, Just and Secure Energy Future", "Venue_ID": "UNHQ", "Local_original": "UNHQ", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV011", "Data_inicio": "2026-09-20", "Data_fim": "2026-09-20", "Inicio": "17:30", "Fim": "19:30", "Hora_texto": "", "Organizacao": "Rani", "Evento": "Rani Network Social", "Venue_ID": "WHEEL", "Local_original": "The Wheeltapper Pub at Fitzpatrick Grand Central", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV012", "Data_inicio": "2026-09-20", "Data_fim": "2026-09-20", "Inicio": "", "Fim": "", "Hora_texto": "check", "Organizacao": "PANORAMA", "Evento": "", "Venue_ID": "NYC", "Local_original": "New York City", "Quem_vai": "RBL", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "TBC - no public registration details found (checked 26 Aug 2026)", "Detalhes": "", "Link": "", "Temas": "", "Formato": "", "Notas_secretariado": "RBL"}, {"ID": "EV013", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "08:00", "Fim": "10:00", "Hora_texto": "", "Organizacao": "PMNCH", "Evento": "PMNCH Accountability Breakfast: From Pledges to Progress: Accountability for Financing to Improve Women's, Children's and Adolescents' Health and Well-being", "Venue_ID": "HARV", "Local_original": "Harvard Club of NYC", "Quem_vai": "BDT", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": "BDT registered"}, {"ID": "EV014", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "09:30", "Fim": "11:00", "Hora_texto": "", "Organizacao": "Devex, in partnership with ViiV", "Evento": "Empowering Communities at the Center of the HIV Response", "Venue_ID": "DEVEX", "Local_original": "Devex Impact House", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV015", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "11:00", "Fim": "13:30", "Hora_texto": "", "Organizacao": "CEPI", "Evento": "Building Crisis-Ready Coalitions: From Fragmentation to Readiness", "Venue_ID": "JAPAN", "Local_original": "Japan Society", "Quem_vai": "BDT", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": "BDT registered"}, {"ID": "EV016", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "12:00", "Fim": "14:00", "Hora_texto": "", "Organizacao": "Rockefeller Foundation", "Evento": "Health Resilience in the 21st Century: Delivering Outcomes Amid Shocks and Stressors", "Venue_ID": "ROCK", "Local_original": "The Rockefeller Foundation Convening Center", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Registration coming soon", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV017", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "12:00", "Fim": "15:00", "Hora_texto": "", "Organizacao": "MSD for Mothers, Jhpiego", "Evento": "The Next Era of Health Access for All: Investing in Women and Strengthening Health Systems", "Venue_ID": "HARV", "Local_original": "Harvard Club of NYC", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Registration coming soon", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV018", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "14:00", "Fim": "16:00", "Hora_texto": "", "Organizacao": "Imperial College London", "Evento": "Biosecurity in the Age of Engineering Biology", "Venue_ID": "CORN", "Local_original": "Cornell Club of NYC", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV019", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "16:00", "Fim": "18:00", "Hora_texto": "", "Organizacao": "Mérieux Foundation USA, Weill Cornell Medical College, & GHESKIO Centers, in partnership with PAHO, the Pandemic Fund, CEPI & APHL", "Evento": "Crisis in preparedness: laboratories & frontline readiness in the time of Ebola", "Venue_ID": "WCM", "Local_original": "Weill Cornell Medicine Belfer Research Building", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV020", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "16:00", "Fim": "18:00", "Hora_texto": "", "Organizacao": "Accra Reset", "Evento": "Accra Reset High-Level Panel Report Launch", "Venue_ID": "MARQ", "Local_original": "New York Marriott Marquis", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Registration coming soon", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV021", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "17:00", "Fim": "18:15", "Hora_texto": "", "Organizacao": "UN Group of Friends to Eliminate Hepatitis", "Evento": "Fifth Annual Meeting of the UN Group of Friends to Eliminate Hepatitis", "Venue_ID": "YALE", "Local_original": "Yale Club of NYC", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "nali-consultant@taskforce.org", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV022", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "18:00", "Fim": "19:15", "Hora_texto": "", "Organizacao": "NCD Alliance, co-sponsored by WHO Global Coordination Mechanism on NCDs", "Evento": "Strategies for a sustainable NCD and mental health response: 5th Multistakeholder Gathering", "Venue_ID": "SCAND", "Local_original": "Scandinavia House", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV023", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "18:00", "Fim": "20:00", "Hora_texto": "", "Organizacao": "Investing in Innovation Africa (i3)", "Evento": "The Role of Healthtech in Driving Sustained Access: Pioneering New Approaches in Pharmacy-based Care", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV024", "Data_inicio": "2026-09-21", "Data_fim": "2026-09-21", "Inicio": "15:30", "Fim": "", "Hora_texto": "", "Organizacao": "Foreign Policy", "Evento": "Her Power @ UNGA81 — Sustaining Action for Women and Girls", "Venue_ID": "NYC", "Local_original": "New York City", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Register / “Receive updates” on the Foreign Policy event page.", "Prazo_registo": "Registration opens 1 Sep 2026 - no closing deadline published", "Detalhes": "Examines how leaders can sustain momentum, close financing gaps and strengthen women's health and rights.", "Link": "Foreign Policy — Receive updates", "Temas": "• Gender equality • Financing for women and girls • Women's health and rights • Women's participation in development, security and innovation", "Formato": "", "Notas_secretariado": ""}, {"ID": "EV025", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "08:30", "Fim": "", "Hora_texto": "", "Organizacao": "Foreign Policy", "Evento": "Energy Forum @ UNGA81 — Powering a Secure and Sustainable Future", "Venue_ID": "NYC", "Local_original": "New York City", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Register / “Receive updates” on the Foreign Policy event page.", "Prazo_registo": "Registration opens 1 Sep 2026 - no closing deadline published", "Detalhes": "Explores how leaders can build more secure, sustainable and competitive energy systems.", "Link": "Foreign Policy — Receive updates", "Temas": "• Energy security • Sustainable energy systems • Energy demand and price pressures • Climate change • Competitiveness", "Formato": "", "Notas_secretariado": ""}, {"ID": "EV026", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "14:00", "Fim": "", "Hora_texto": "", "Organizacao": "Foreign Policy", "Evento": "Tech & AI Forum @ UNGA81 — Navigating Power, Trust, and Cooperation", "Venue_ID": "NYC", "Local_original": "New York City", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Register / “Receive updates” on the Foreign Policy event page.", "Prazo_registo": "Registration opens 1 Sep 2026 - no closing deadline published", "Detalhes": "Explores governance, infrastructure, workforce and security challenges of global technology cooperation.", "Link": "Foreign Policy — Receive updates", "Temas": "• AI governance • Digital infrastructure • Workforce • Security • International cooperation and strategic competition", "Formato": "", "Notas_secretariado": ""}, {"ID": "EV027", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "", "Fim": "", "Hora_texto": "Todo o dia", "Organizacao": "NeuroCentury, Brain Capital Alliance, the Euro Mediterranean Economists Association, the Davos Alzheimer's Collaborative, the Global Brain Economy Initiative, and The Brain House", "Evento": "Global Brain Economy Summit", "Venue_ID": "STEEL", "Local_original": "Steelcase, 4 Columbus Circle", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV028", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "07:30", "Fim": "09:45", "Hora_texto": "", "Organizacao": "Rani, The Elders, and The Independent Panel for Pandemic Preparedness and Response", "Evento": "Resilience and Stability for All: Prioritising International Partnerships for Our Shared Health and Security", "Venue_ID": "", "Local_original": "TBC", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV029", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "08:00", "Fim": "09:30", "Hora_texto": "", "Organizacao": "Devex, in partnership with Eli Lilly & Company", "Evento": "Accelerating Progress in Global Cardiometabolic Health", "Venue_ID": "DEVEX", "Local_original": "Devex Impact House", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV030", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "08:00", "Fim": "10:00", "Hora_texto": "", "Organizacao": "Business Council for International Understanding and Siemens Healthineers", "Evento": "Building Brain Health Readiness: Strengthening Systems for the Future", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV031", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "09:30", "Fim": "11:00", "Hora_texto": "", "Organizacao": "Devex, in partnership with International Society of Nephrology", "Evento": "The Health System Stress Test: Integrated NCD Care for UHC", "Venue_ID": "DEVEX", "Local_original": "Devex Impact House", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV032", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "10:00", "Fim": "", "Hora_texto": "", "Organizacao": "", "Evento": "Opening of High-Level Debate of UN General Assembly", "Venue_ID": "UNHQ", "Local_original": "UNHQ", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "Livestream (webtv.un.org)", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV033", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "11:00", "Fim": "12:30", "Hora_texto": "", "Organizacao": "Devex, in partnership with MSD for Mothers", "Evento": "Everyday Impact: Scaling Postpartum Hemorrhage Prevention and Treatment Innovations", "Venue_ID": "DEVEX", "Local_original": "Devex Impact House", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV034", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "13:00", "Fim": "17:00", "Hora_texto": "", "Organizacao": "United to Beat Malaria", "Evento": "Stepping Up the Fight Against Malaria", "Venue_ID": "MEETG", "Local_original": "Meeting Galleries, 155 E 44th St.", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV035", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "13:30", "Fim": "17:30", "Hora_texto": "", "Organizacao": "Jameel Arts & Health Lab, NYU, WHO Regional Office for Europe", "Evento": "Launch of the Jameel Arts & Health Lab – Lancet Global Collection on Arts and Health", "Venue_ID": "SKIRB", "Local_original": "Skirball Center for the Performing Arts", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV036", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "14:00", "Fim": "17:00", "Hora_texto": "", "Organizacao": "Science Summit 2026 - Event", "Evento": "Beyond Preparedness: Building Resilient Societies for an Age of Interconnected Global Risks", "Venue_ID": "CURE", "Local_original": "345, Park Avenue South, New York", "Quem_vai": "BDT", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "ISC Intelligence / Science4All Foundation", "Link": "https://event.sciencesummitnyc.org/list-of-sessions", "Temas": "", "Formato": "", "Notas_secretariado": "BDT registered"}, {"ID": "EV037", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "14:30", "Fim": "16:00", "Hora_texto": "", "Organizacao": "Global Coalition on Aging, in partnership with BBC StoryWorks Commercial Productions", "Evento": "Changing Policies and Mindsets: Strategies for Healthier Aging Societies", "Venue_ID": "BRYANT", "Local_original": "Bryant Park Hotel", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "apeyasena@globalcoalitiononaging.com", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV038", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "15:00", "Fim": "16:30", "Hora_texto": "", "Organizacao": "The Kingdom of Bhutan, ESCAP, Multidimensional Poverty Peer Network, Oxford Poverty and Human Development Initiative", "Evento": "Beyond 2030: Renewing the Global Commitment to End Poverty in All its Dimensions", "Venue_ID": "UNHQ", "Local_original": "UNHQ", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV039", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "15:15", "Fim": "16:00", "Hora_texto": "", "Organizacao": "Atlantic Council", "Evento": "Pfizer's Albert Bourla on AI, health, and innovation in a changing world", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Virtual", "Notas_secretariado": ""}, {"ID": "EV040", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "15:30", "Fim": "17:00", "Hora_texto": "", "Organizacao": "Guyana, PAHO, Africa CDC", "Evento": "From Risk to Resilience: Connecting the Americas and Africa to Finance Pandemic Preparedness and Build Global Health Security", "Venue_ID": "UNHQ", "Local_original": "UNHQ", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Registration coming soon", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV041", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "16:00", "Fim": "", "Hora_texto": "", "Organizacao": "The Human Change Foundation", "Evento": "Beyond a Safety Framework: Strengthening human connection in children in the digital age", "Venue_ID": "LANGHAM", "Local_original": "The Langham Hotel,  NYC", "Quem_vai": "RBL, GD, BDT", "Objetivo": "", "Estado": "To review", "RSVP": "RSVP here by Monday, September 14 - Invite-only, conducted under the Chatham House Rule", "Prazo_registo": "Registration opens 1 Sep 2026 - no closing deadline published", "Detalhes": "", "Link": "", "Temas": "", "Formato": "", "Notas_secretariado": "RBL/GD/BDT"}, {"ID": "EV042", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "17:00", "Fim": "20:30", "Hora_texto": "", "Organizacao": "MOSAIC Capital Collaborative Salon, with Chandra Impact Fund & Alana Foundation", "Evento": "MOSAIC Capital Collaborative Salon: An Evening of Discovery and Collective Action for Women's Health", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV043", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "17:30", "Fim": "19:30", "Hora_texto": "", "Organizacao": "Temasek Foundation and UN Foundation", "Evento": "Partnership Launch for Advancing Pandemic Risk Assessment", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV044", "Data_inicio": "2026-09-22", "Data_fim": "2026-09-22", "Inicio": "18:30", "Fim": "20:30", "Hora_texto": "", "Organizacao": "Museum of the City of New York, NYC Health + Hospitals Arts in Medicine, Laurie M. Tisch Illumination Fund", "Evento": "Public Art as Public Health: The Role of Visual Art in Hospitals", "Venue_ID": "MCNY", "Local_original": "Museum of the City of New York", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV045", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "", "Fim": "", "Hora_texto": "Todo o dia", "Organizacao": "European Brain Council (and Global Brain Coalition)", "Evento": "Brain Days at UNGA81", "Venue_ID": "CURE", "Local_original": "Cure, New York City", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Register via European Brain Council event page.", "Prazo_registo": "No deadline published - waitlist open (checked 26 Aug 2026)", "Detalhes": "Speakers: Neetu Abad (Director, Rosalynn Carter Mental Health and Caregiver Program, The Carter Center); Elizabeth Allen (Executive Advisor, Canadian Centre on Substance Use and Addiction).", "Link": "European Brain Council", "Temas": "• Brain health • Neurological and mental health conditions • Brain capital and economic impacts • Global policy for brain health", "Formato": "", "Notas_secretariado": ""}, {"ID": "EV046", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "08:00", "Fim": "", "Hora_texto": "", "Organizacao": "Foreign Policy", "Evento": "Health Forum @ UNGA81 — From Global Commitments to Sustained Action and Improved Outcomes", "Venue_ID": "GATHER", "Local_original": "Studio Gather, 45 Rockefeller Plaza", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Register / “Receive updates” on the Foreign Policy event page.", "Prazo_registo": "No deadline published — registration form open (checked 26 Aug 2026)", "Detalhes": "Two-day forum (23–24 Sep). Explores mobilising sustainable financing, strengthening domestic health systems, accelerating innovation and integrating health and pandemic preparedness into economic and security strategies.", "Link": "Foreign Policy — Health Forum", "Temas": "• Noncommunicable diseases (NCDs) • Health security and pandemic preparedness • Sustainable health financing • Health system strengthening • Innovation in health", "Formato": "", "Notas_secretariado": ""}, {"ID": "EV047", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "07:30", "Fim": "09:00", "Hora_texto": "", "Organizacao": "World Obesity Federation (co-hosts: Egypt, Thailand)", "Evento": "Obesity, Health Systems and Sustainable Development (High-Level Breakfast Roundtable)", "Venue_ID": "RIVER", "Local_original": "The River Club of New York, 447 E 52nd St, New York, NY 10022", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invitation-only, closed-door (~30 participants). By invitation of the World Obesity Federation.", "Prazo_registo": "No public deadline found (checked 26 Aug 2026)", "Detalhes": "Co-hosted by the World Obesity Federation, Egypt and Thailand. A rapporteur will produce a post-event working paper.", "Link": "", "Temas": "• Obesity as a public health and health-system challenge • Noncommunicable diseases (NCDs) • Universal health coverage • Global health architecture reform • Road to 2027 UN High-Level Meeting on UHC", "Formato": "", "Notas_secretariado": ""}, {"ID": "EV048", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "08:00", "Fim": "10:00", "Hora_texto": "", "Organizacao": "Helmsley Charitable Trust, UNICEF, Eli Lilly", "Evento": "Creating the Conditions for Care: Building Resilient Health Systems for Children Living with Noncommunicable Diseases", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV049", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "09:00", "Fim": "", "Hora_texto": "", "Organizacao": "Yale Center on Climate Change and Health, National Academy of Medicine", "Evento": "Health Systems Implementing Climate Action", "Venue_ID": "NYAM", "Local_original": "New York Academy of Medicine", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV050", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "09:30", "Fim": "11:00", "Hora_texto": "", "Organizacao": "Devex, in partnership with Imaginable Futures", "Evento": "Architects of Tomorrow: Mobilizing AI & Philanthropy for Next-Gen Learning", "Venue_ID": "DEVEX", "Local_original": "Devex Impact House", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV051", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "10:00", "Fim": "11:30", "Hora_texto": "", "Organizacao": "Women's Health and Education Center, Children's Hospital Los Angeles, American Academy of Pediatrics", "Evento": "Open Science: As Open As Possible for Health Development", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Virtual", "Notas_secretariado": ""}, {"ID": "EV052", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "12:00", "Fim": "14:00", "Hora_texto": "", "Organizacao": "Business Council for International Understanding, Merck & Co.", "Evento": "Strengthening National ASCVD Policy Frameworks: From Evidence to Implementation", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV053", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "13:00", "Fim": "19:00", "Hora_texto": "", "Organizacao": "National Academy of Medicine and the New York Academy of Medicine", "Evento": "Climate and Health Commons", "Venue_ID": "NYAM", "Local_original": "New York Academy of Medicine", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV054", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "13:15", "Fim": "14:45", "Hora_texto": "", "Organizacao": "UN Group of Friends of UHC (Georgia, Japan, and Thailand), UHC2030, and UN Foundation", "Evento": "7th Annual UN Group of Friends of UHC Ministerial Meeting: Accelerating Universal Health Coverage for a More Resilient World — Road to the 2027 High Level Meeting", "Venue_ID": "UNHQ", "Local_original": "UNHQ", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Registration coming soon", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV055", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "14:00", "Fim": "14:45", "Hora_texto": "", "Organizacao": "Global Polio Eradication Initiative", "Evento": "One Investment, Multiple Returns: Strengthening Child Health through Polio Eradication", "Venue_ID": "UNHQ", "Local_original": "UNHQ, Goals Lounge", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Registration coming soon", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV056", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "12:45", "Fim": "", "Hora_texto": "", "Organizacao": "AstraZeneca", "Evento": "Lunch Session", "Venue_ID": "", "Local_original": "", "Quem_vai": "RBL", "Objetivo": "", "Estado": "Following", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "Goals House/Astra Zeneca", "Link": "Email", "Temas": "Sustainability and AI", "Formato": "", "Notas_secretariado": "rbl invited"}, {"ID": "EV057", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "14:30", "Fim": "16:00", "Hora_texto": "", "Organizacao": "Novo Nordisk, PATH & NCD Coalition", "Evento": "Access for Better Health: From Innovation to Impact at Scale", "Venue_ID": "CURE", "Local_original": "Cure, 345 Park Avenue South, New York, NY (~20 min walk from UN HQ)", "Quem_vai": "BDT", "Objetivo": "", "Estado": "To review", "RSVP": "Save the date — formal invitation to follow.", "Prazo_registo": "TBC — formal invitation pending; no deadline published", "Detalhes": "Session 2:30–4:00 PM followed by a networking reception until 5:00 PM.", "Link": "", "Temas": "• Access to health innovation • Noncommunicable diseases (NCDs) • Scaling impact", "Formato": "", "Notas_secretariado": "BDT registered"}, {"ID": "EV058", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "15:00", "Fim": "16:00", "Hora_texto": "", "Organizacao": "Unitaid", "Evento": "Shaping the Future of Global Health Innovation and Access (20th anniversary)", "Venue_ID": "YALE", "Local_original": "Yale Club, New York City", "Quem_vai": "GD", "Objetivo": "", "Estado": "To review", "RSVP": "Save the date — formal invitation and programme to follow.", "Prazo_registo": "TBC — formal invitation pending; no deadline published", "Detalhes": "High-level discussion marking Unitaid's 20th anniversary, followed by a reception. Featured speaker: Dr Chelsea Clinton.", "Link": "", "Temas": "• Equitable access to health innovations • Global health partnerships • Future of health innovation", "Formato": "", "Notas_secretariado": "Please register GD"}, {"ID": "EV059", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "16:00", "Fim": "18:00", "Hora_texto": "", "Organizacao": "Pandemic Fund", "Evento": "Prepared for What's Next: How Country Investments are Powering Global Health Resilience", "Venue_ID": "GATHER", "Local_original": "Studio Gather, 45 Rockefeller Plaza", "Quem_vai": "BDT", "Objetivo": "", "Estado": "To review", "RSVP": "Register via the Foreign Policy event page.", "Prazo_registo": "No deadline published — registration form open (checked 26 Aug 2026)", "Detalhes": "Hosts: Governments of Armenia and Rwanda. Moderated by Andrew Sollinger (CEO and Publisher, Foreign Policy).", "Link": "Prepared for What's Next", "Temas": "• Pandemic prevention, preparedness and response (PPPR) • Country investments in preparedness • Health system resilience • Health and economic security", "Formato": "", "Notas_secretariado": "BDT registered"}, {"ID": "EV060", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "18:30", "Fim": "20:30", "Hora_texto": "", "Organizacao": "Gavi, the Vaccine Alliance, and the Government of Rwanda", "Evento": "From global reform to country leadership & last-mile impact – A Gavi Leap dialogue", "Venue_ID": "YALE", "Local_original": "Yale Club of NYC", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": "Trying to get 1-2 invites"}, {"ID": "EV061", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "18:30", "Fim": "21:00", "Hora_texto": "", "Organizacao": "Perry World House", "Evento": "Perry World House 10th Anniversary Reception", "Venue_ID": "PENN", "Local_original": "Penn Club of NYC", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV062", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "18:45", "Fim": "19:30", "Hora_texto": "", "Organizacao": "AstraZeneca", "Evento": "Climate Week & UNGA Reception and Dinner", "Venue_ID": "CATH", "Local_original": "Cathédrale, 112 East 11th St, New York City, NY", "Quem_vai": "RBL, GD, SM", "Objetivo": "", "Estado": "RSVP sent", "RSVP": "RSVP by 24 August 2026 to Patrick Rooney — patrick.rooney@astrazeneca.com. Formal invitation to follow.", "Prazo_registo": "24 Aug 2026 - deadline passed", "Detalhes": "Reception and networking 6:45–7:30 PM ET; dinner 7:30 PM ET. Held during Climate Week and the UN General Assembly.", "Link": "", "Temas": "• Health of people, society and the planet • Climate Week • Leadership networking", "Formato": "", "Notas_secretariado": "GD/TBC: RBL, SEN MAROTO"}, {"ID": "EV063", "Data_inicio": "2026-09-23", "Data_fim": "2026-09-23", "Inicio": "19:30", "Fim": "21:00", "Hora_texto": "", "Organizacao": "Foreign Policy, IFPMA", "Evento": "#AlwaysInnovating reception: Solutions for stronger, resilient health systems", "Venue_ID": "GATHER", "Local_original": "Studio Gather, 45 Rockefeller Plaza", "Quem_vai": "GD", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "More info", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": "Please register GD"}, {"ID": "EV064", "Data_inicio": "2026-09-24", "Data_fim": "2026-09-24", "Inicio": "07:15", "Fim": "09:30", "Hora_texto": "", "Organizacao": "G20 High-Level Independent Panel (HLIP) on Pandemic Preparedness and Response", "Evento": "G20 High-Level Independent Panel (HLIP) Breakfast Convening", "Venue_ID": "YALE", "Local_original": "Yale Club of NYC", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV065", "Data_inicio": "2026-09-24", "Data_fim": "2026-09-24", "Inicio": "08:00", "Fim": "10:00", "Hora_texto": "", "Organizacao": "European Commission", "Evento": "EU Powering Global Health Resilience", "Venue_ID": "EUDEL", "Local_original": "EU Delegation to the UN, 666 3rd Ave", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV066", "Data_inicio": "2026-09-24", "Data_fim": "2026-09-24", "Inicio": "08:30", "Fim": "10:00", "Hora_texto": "", "Organizacao": "AHF Global Public Health Institute, Club de Madrid, and the Government of Spain", "Evento": "Reimagining Global Public Health Architecture: Regional Approaches for Equity, Preparedness, and Shared Security", "Venue_ID": "UCLUB", "Local_original": "The University Club of NYC", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Registration coming soon", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV067", "Data_inicio": "2026-09-24", "Data_fim": "2026-09-24", "Inicio": "09:00", "Fim": "11:00", "Hora_texto": "", "Organizacao": "UNICEF & Novo Nordisk", "Evento": "Healthy Futures by Design: Creating Environments where Children Thrive", "Venue_ID": "DKCON", "Local_original": "Consulate General of Denmark, 666 Third Avenue, 11th Fl, New York, NY (10 min walk from UN HQ)", "Quem_vai": "BDT, SM", "Objetivo": "", "Estado": "To review", "RSVP": "Save the date — formal invitation to follow.", "Prazo_registo": "invitation received", "Detalhes": "9:00–9:30 AM breakfast; 9:30–11:00 AM programme.", "Link": "", "Temas": "• Child health • Healthy environments by design • Noncommunicable diseases prevention", "Formato": "", "Notas_secretariado": "BDT/Sen. Maroto"}, {"ID": "EV068", "Data_inicio": "2026-09-24", "Data_fim": "2026-09-24", "Inicio": "09:00", "Fim": "12:00", "Hora_texto": "", "Organizacao": "Science Summit 2026 - Event", "Evento": "From Exchange to Ecosystem: Co-Designing Multidirectional Global Health Partnerships in the Age of Artificial Intelligence", "Venue_ID": "CURE", "Local_original": "345, Park Avenue South, New York", "Quem_vai": "BDT", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "invitation received", "Detalhes": "", "Link": "https://event.sciencesummitnyc.org/list-of-sessions", "Temas": "", "Formato": "", "Notas_secretariado": "BDT registered"}, {"ID": "EV069", "Data_inicio": "2026-09-24", "Data_fim": "2026-09-24", "Inicio": "11:30", "Fim": "14:00", "Hora_texto": "", "Organizacao": "Business Council for International Understanding, BD, & Global Surgery Foundation", "Evento": "Advancing Maternal Safety during Childbirth: Improving Recognition, Response and Care", "Venue_ID": "YALE", "Local_original": "Yale Club of NYC", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV070", "Data_inicio": "2026-09-24", "Data_fim": "2026-09-24", "Inicio": "13:00", "Fim": "", "Hora_texto": "", "Organizacao": "Foreign Policy", "Evento": "Global Development Forum @ UNGA81 — Rethinking Aid, Finance, and Impact", "Venue_ID": "NYC", "Local_original": "New York City", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Register / “Receive updates” on the Foreign Policy event page.", "Prazo_registo": "Registration opens 1 Sep 2026 — no closing deadline published", "Detalhes": "Examines how leaders are reimagining development models to prioritise measurable outcomes, local leadership, transparency and long-term impact.", "Link": "Foreign Policy — Receive updates", "Temas": "• Aid and development finance • Debt and shrinking aid budgets • Food and energy insecurity • Measurable outcomes, local leadership, transparency", "Formato": "", "Notas_secretariado": ""}, {"ID": "EV071", "Data_inicio": "2026-09-24", "Data_fim": "2026-09-24", "Inicio": "17:00", "Fim": "19:00", "Hora_texto": "", "Organizacao": "Devex", "Evento": "The First Year: Where Should the Next UN Leadership Start?", "Venue_ID": "", "Local_original": "", "Quem_vai": "RBL, GD", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "Devex/EY", "Link": "https://pages.devex.com/devex-at-unga-81.html?modal=thankYouInPerson", "Temas": "", "Formato": "", "Notas_secretariado": "RBL speaker invitation/GD registered"}, {"ID": "EV072", "Data_inicio": "2026-09-24", "Data_fim": "2026-09-24", "Inicio": "18:00", "Fim": "21:00", "Hora_texto": "", "Organizacao": "MPP", "Evento": "“Advancing Pandemic Preparedness through Voluntary Licensing, Technology Transfer, and Local Production.”", "Venue_ID": "YALE", "Local_original": "Yale Club, New York City", "Quem_vai": "", "Objetivo": "", "Estado": "in review", "RSVP": "Invite only", "Prazo_registo": "10th September", "Detalhes": "Event + Networking Reception", "Link": "(email)", "Temas": "Panel 1: Access in action — early licensing, manufacturing readiness and implementation, examining how access arrangements can be established early and translated into practical readiness before demand surges.  Panel 2: PPPR systems, voluntary licensing, technology transfer and regional manufacturing, exploring the broader systems needed for pandemic preparedness, including licensing, technology transfer, regulatory readiness, financing and regional manufacturing capacity.", "Formato": "", "Notas_secretariado": ""}, {"ID": "EV073", "Data_inicio": "2026-09-25", "Data_fim": "2026-09-25", "Inicio": "10:00", "Fim": "18:00", "Hora_texto": "", "Organizacao": "", "Evento": "UN High-Level Meeting on Pandemic Prevention, Preparedness, and Response (PPPR)", "Venue_ID": "UNHQ", "Local_original": "UNHQ", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "", "Link": "Livestream (webtv.un.org)", "Temas": "", "Formato": "In-person", "Notas_secretariado": ""}, {"ID": "EV074", "Data_inicio": "2026-09-25", "Data_fim": "2026-09-25", "Inicio": "11:00", "Fim": "15:00", "Hora_texto": "", "Organizacao": "Science Summit 2026 - Event", "Evento": "Open infrastructures for global health, education and open science", "Venue_ID": "ONLINE", "Local_original": "ONLINE", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "", "Prazo_registo": "", "Detalhes": "UN Official event", "Link": "https://event.sciencesummitnyc.org/list-of-sessions/detail/415", "Temas": "", "Formato": "", "Notas_secretariado": ""}, {"ID": "EV075", "Data_inicio": "2026-09-25", "Data_fim": "2026-09-25", "Inicio": "11:45", "Fim": "", "Hora_texto": "", "Organizacao": "Pan-African Parliament (PAP) & PFP NGO", "Evento": "Africa's Policy & Investment Summit: Health Systems Strengthening Empowers Healthy Citizens to Spur Exponential Economic Growth", "Venue_ID": "RENTS", "Local_original": "Renaissance Times Square NYC, Two Times Square, 714 Seventh Avenue at W. 48th St, New York, NY", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Private, invitation-only — RSVP details provided on the event announcement.", "Prazo_registo": "Invitation only — no deadline published", "Detalhes": "Dialogue for policymakers, investors and partners focused on mobilising capital for health-systems strengthening in Africa. Hosted by the Pan-African Parliament and PFP NGO.", "Link": "UNGA81 Africa's Policy & Investment Summit", "Temas": "• Health systems strengthening • Public health advocacy and policy • Health diplomacy • Investment in healthcare • Economic growth in Africa", "Formato": "", "Notas_secretariado": ""}, {"ID": "EV076", "Data_inicio": "2026-09-25", "Data_fim": "2026-09-25", "Inicio": "13:00", "Fim": "14:00", "Hora_texto": "", "Organizacao": "Co-convenors of the Friends of the HLM on PPPR; the UN Office for Partnerships, Permanent Mission of Finland to the UN", "Evento": "What next in the quest to protect people from health emergencies and pandemics?", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "Invite only", "Prazo_registo": "", "Detalhes": "", "Link": "", "Temas": "", "Formato": "Hybrid", "Notas_secretariado": ""}, {"ID": "EV077", "Data_inicio": "", "Data_fim": "", "Inicio": "", "Fim": "", "Hora_texto": "TBC", "Organizacao": "IPSF", "Evento": "TBC", "Venue_ID": "", "Local_original": "", "Quem_vai": "", "Objetivo": "", "Estado": "To review", "RSVP": "TBC", "Prazo_registo": "", "Detalhes": "Event to be confirmed.", "Link": "", "Temas": "", "Formato": "", "Notas_secretariado": ""}], "pessoas": [{"Codigo": "RBL", "Nome": "Ricardo Baptista Leite", "Funcao": "", "Telemovel": "", "Email": "", "Cor": "#1D9E75"}, {"Codigo": "GD", "Nome": "Guilherme Duarte", "Funcao": "", "Telemovel": "", "Email": "", "Cor": "#378ADD"}, {"Codigo": "BDT", "Nome": "Beatriz de Tarragon", "Funcao": "", "Telemovel": "", "Email": "", "Cor": "#7F77DD"}, {"Codigo": "SM", "Nome": "S. Maroto", "Funcao": "", "Telemovel": "", "Email": "", "Cor": "#D85A30"}], "venues": [{"Venue_ID": "UNHQ", "Nome": "UNHQ", "Morada": "405 E 42nd St", "Latitude": 40.7489, "Longitude": -73.968, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7489,-73.968", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "YALE", "Nome": "Yale Club of NYC", "Morada": "50 Vanderbilt Ave", "Latitude": 40.7538, "Longitude": -73.9772, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7538,-73.9772", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "HARV", "Nome": "Harvard Club of NYC", "Morada": "35 W 44th St", "Latitude": 40.7554, "Longitude": -73.9805, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7554,-73.9805", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "CORN", "Nome": "Cornell Club of NYC", "Morada": "6 E 44th St", "Latitude": 40.754, "Longitude": -73.979, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.754,-73.979", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "PENN", "Nome": "Penn Club of NYC", "Morada": "30 W 44th St", "Latitude": 40.7551, "Longitude": -73.9803, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7551,-73.9803", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "UCLUB", "Nome": "The University Club of NYC", "Morada": "1 W 54th St", "Latitude": 40.7612, "Longitude": -73.9757, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7612,-73.9757", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "MARQ", "Nome": "New York Marriott Marquis", "Morada": "1535 Broadway", "Latitude": 40.7584, "Longitude": -73.986, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7584,-73.986", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "JAPAN", "Nome": "Japan Society", "Morada": "333 E 47th St", "Latitude": 40.7527, "Longitude": -73.968, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7527,-73.968", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "SCAND", "Nome": "Scandinavia House", "Morada": "58 Park Ave", "Latitude": 40.7495, "Longitude": -73.9803, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7495,-73.9803", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "ROCK", "Nome": "The Rockefeller Foundation Convening Center", "Morada": "420 5th Ave", "Latitude": 40.7517, "Longitude": -73.9836, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7517,-73.9836", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "WCM", "Nome": "Weill Cornell Medicine Belfer Research Building", "Morada": "413 E 69th St", "Latitude": 40.7651, "Longitude": -73.9548, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7651,-73.9548", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "CURE", "Nome": "Cure", "Morada": "345 Park Ave South", "Latitude": 40.7418, "Longitude": -73.9856, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7418,-73.9856", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "GATHER", "Nome": "Studio Gather", "Morada": "45 Rockefeller Plaza", "Latitude": 40.759, "Longitude": -73.9787, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.759,-73.9787", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "DEVEX", "Nome": "Devex Impact House", "Morada": "(morada a confirmar)", "Latitude": "", "Longitude": "", "Maps_URL": "", "Nota": "Local/morada a confirmar"}, {"Venue_ID": "BRYANT", "Nome": "Bryant Park Hotel", "Morada": "40 W 40th St", "Latitude": 40.7532, "Longitude": -73.9836, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7532,-73.9836", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "LANGHAM", "Nome": "The Langham, New York", "Morada": "400 5th Ave", "Latitude": 40.7502, "Longitude": -73.9845, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7502,-73.9845", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "MCNY", "Nome": "Museum of the City of New York", "Morada": "1220 5th Ave", "Latitude": 40.7925, "Longitude": -73.952, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7925,-73.952", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "NYAM", "Nome": "New York Academy of Medicine", "Morada": "1216 5th Ave", "Latitude": 40.7922, "Longitude": -73.9524, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7922,-73.9524", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "SKIRB", "Nome": "Skirball Center for the Performing Arts", "Morada": "566 LaGuardia Pl", "Latitude": 40.729, "Longitude": -73.9985, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.729,-73.9985", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "STEEL", "Nome": "Steelcase", "Morada": "4 Columbus Circle", "Latitude": 40.7676, "Longitude": -73.9822, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7676,-73.9822", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "EUDEL", "Nome": "EU Delegation to the UN", "Morada": "666 3rd Ave", "Latitude": 40.7517, "Longitude": -73.9738, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7517,-73.9738", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "DKCON", "Nome": "Consulate General of Denmark", "Morada": "885 Second Ave", "Latitude": 40.7517, "Longitude": -73.9683, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7517,-73.9683", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "CATH", "Nome": "Cathédrale", "Morada": "112 E 11th St", "Latitude": 40.7318, "Longitude": -73.9884, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7318,-73.9884", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "RENTS", "Nome": "Renaissance New York Times Square", "Morada": "714 7th Ave", "Latitude": 40.7597, "Longitude": -73.985, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7597,-73.985", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "MEETG", "Nome": "Meeting Galleries", "Morada": "155 E 44th St", "Latitude": 40.753, "Longitude": -73.974, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.753,-73.974", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "RIVER", "Nome": "The River Club of New York", "Morada": "447 E 52nd St", "Latitude": 40.7546, "Longitude": -73.9635, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7546,-73.9635", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "BEALE", "Nome": "Francesca Beale Theater (Lincoln Center)", "Morada": "144 W 65th St", "Latitude": 40.7734, "Longitude": -73.9834, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7734,-73.9834", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "WHEEL", "Nome": "The Wheeltapper Pub, Fitzpatrick Grand Central", "Morada": "141 E 44th St", "Latitude": 40.7523, "Longitude": -73.9748, "Maps_URL": "https://www.google.com/maps/search/?api=1&query=40.7523,-73.9748", "Nota": "Coordenadas aproximadas — verificar"}, {"Venue_ID": "NYC", "Nome": "Nova Iorque (local a confirmar)", "Morada": "", "Latitude": "", "Longitude": "", "Maps_URL": "", "Nota": "Local/morada a confirmar"}, {"Venue_ID": "ONLINE", "Nome": "Online", "Morada": "", "Latitude": "", "Longitude": "", "Maps_URL": "", "Nota": "Local/morada a confirmar"}], "contactos": [{"ID_evento": "EV067", "Nome": "(exemplo) Nome Apelido", "Cargo": "Directora", "Organizacao": "Organização X", "Objetivo_da_conversa": "Pedir reunião bilateral em Outubro", "Quem_fala": "BDT", "Prioridade": "Alta"}, {"ID_evento": "EV067", "Nome": "(exemplo) Outro Nome", "Cargo": "Conselheiro", "Organizacao": "Fundação Y", "Objetivo_da_conversa": "Apresentar a iniciativa", "Quem_fala": "SM", "Prioridade": "Média"}], "followup": []};
+/* ======================================================== */
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ICON = {
+  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M17.5 13.5a6.5 6.5 0 0 1 4 6.5"/></svg>',
+  walk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="1.5"/><path d="M10 21l2-6 3 2v4"/><path d="M8 13l2-5 3-1 3 3 2 1"/><path d="M12 8l-2 5"/></svg>',
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="10" r="2.5"/><path d="M8 17a4 4 0 0 1 8 0"/></svg>',
+  note:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l4 4v12H5z"/><path d="M8 12h8M8 16h5"/></svg>',
+  chev:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+  warn:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:1px"><path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17h.01"/></svg>',
+  up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>',
+  chevd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
+};
+
+/* ---------- estado ---------- */
+const S = {
+  data: null, me: localStorage.getItem("unga.me") || "", day: "", tab: "agenda", view: "mine",
+  simNow: null, queue: JSON.parse(localStorage.getItem("unga.queue") || "[]"),
+  sent: JSON.parse(localStorage.getItem("unga.sent") || "[]")
+};
+const SECRET = "SEC";
+
+/* ---------- utilidades ---------- */
+function nowNY(){
+  if (S.simNow) return S.simNow;
+  const p = new Intl.DateTimeFormat("en-CA",{timeZone:CONFIG.TZ,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date());
+  const g = t => p.find(x=>x.type===t).value;
+  return { date:`${g("year")}-${g("month")}-${g("day")}`, min: (+g("hour")%24)*60 + +g("minute") };
+}
+const toMin = h => { if(!h) return null; const [a,b]=String(h).split(":"); return +a*60+ +b; };
+const fmtMin = m => `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`;
+const DOW = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+const dayLabel = d => { const dt = new Date(d+"T12:00:00"); return { dow: DOW[dt.getDay()], n: dt.getDate() }; };
+const longDay = d => { const l = dayLabel(d); return `${l.dow} ${l.n} Set`; };
+const people = () => S.data.pessoas;
+const person = c => people().find(p=>p.Codigo===c);
+const venue = id => S.data.venues.find(v=>v.Venue_ID===id);
+const who = e => String(e.Quem_vai||"").split(",").map(s=>s.trim()).filter(Boolean);
+const isMine = e => S.me===SECRET ? true : who(e).includes(S.me);
+const onDay = (e,d) => e.Data_inicio && d>=e.Data_inicio && d<=(e.Data_fim||e.Data_inicio);
+const timed = e => e.Inicio!=="" && e.Inicio!=null;
+const endOf = e => toMin(e.Fim) ?? (toMin(e.Inicio)+90);   // sem fim declarado: assume 90 min
+const statusClass = s => /regist|confirm/i.test(s)?"ok":/rsvp|follow|review/i.test(s)?"neu":/declin/i.test(s)?"bad":"neu";
+const statusPT = s => ({"To review":"por rever","RSVP sent":"RSVP enviado","Registered":"registado","Confirmed":"confirmado","Declined":"recusado","Following":"a acompanhar","in review":"em análise"}[s]||s||"por rever");
+
+function dist(a,b){ // metros, linha recta × factor de quadrícula
+  const va=venue(a), vb=venue(b);
+  if(!va||!vb||!va.Latitude||!vb.Latitude) return null;
+  if(a===b) return 0;
+  const R=6371000, r=Math.PI/180, dl=(vb.Latitude-va.Latitude)*r, dg=(vb.Longitude-va.Longitude)*r;
+  const h=Math.sin(dl/2)**2+Math.cos(va.Latitude*r)*Math.cos(vb.Latitude*r)*Math.sin(dg/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h))*CONFIG.DETOUR;
+}
+const walkMin = m => m==null?null:Math.max(1,Math.round(m/CONFIG.WALK_M_PER_MIN));
+const kmTxt = m => m<950 ? `${Math.round(m/50)*50} m` : `${(m/1000).toFixed(1).replace(".",",")} km`;
+function mapsUrl(e){ const v=venue(e.Venue_ID); if(v&&v.Maps_URL) return v.Maps_URL; const q=encodeURIComponent((v?v.Nome+" "+v.Morada:e.Local_original||"")+" New York"); return `https://www.google.com/maps/search/?api=1&query=${q}`; }
+function placeName(e){ const v=venue(e.Venue_ID); return v ? v.Nome : (e.Local_original || "Local a confirmar"); }
+
+function transit(prev, next){ // prev termina, next começa
+  if(!prev||!next||!timed(prev)||!timed(next)) return null;
+  const gap = toMin(next.Inicio) - endOf(prev);
+  const d = dist(prev.Venue_ID, next.Venue_ID);
+  const w = walkMin(d);
+  let cls="neu", txt;
+  if(d==null){ txt = gap<0 ? `sobreposição de ${-gap} min` : `${gap} min de intervalo · distância desconhecida`; if(gap<0) cls="bad"; }
+  else if(d===0){ txt = gap<0 ? `sobreposição de ${-gap} min · mesmo local` : `mesmo local · ${gap} min de intervalo`; if(gap<0) cls="warn"; }
+  else {
+    const slack = gap - w;
+    txt = `${kmTxt(d)} · ${w} min a pé`;
+    if(gap<0){ cls="bad"; txt += ` · sobreposição de ${-gap} min`; }
+    else if(slack<0){ cls="bad"; txt += ` · sem folga — sair às ${fmtMin(endOf(prev)+slack)} ou táxi`; }
+    else if(slack<10){ cls="warn"; txt += ` · folga de ${slack} min`; }
+    else txt += ` · folga de ${slack} min`;
+  }
+  return {cls, txt, gap, w, d};
+}
+
+function eventsFor(code, d){
+  return S.data.eventos.filter(e=>onDay(e,d) && (code===SECRET||who(e).includes(code)))
+    .sort((a,b)=>(timed(a)?toMin(a.Inicio):-1)-(timed(b)?toMin(b.Inicio):-1));
+}
+
+/* ---------- dados ---------- */
+async function load(force){
+  const cached = localStorage.getItem("unga.data");
+  if(cached && !force){ try{ S.data = JSON.parse(cached); }catch{} }
+  if(!CONFIG.API_URL){ if(!S.data||force) S.data = EMBEDDED; return; }
+  try{
+    const r = await fetch(`${CONFIG.API_URL}?action=agenda&code=${encodeURIComponent(CONFIG.ACCESS_CODE)}`);
+    const j = await r.json(); if(j.error) throw new Error(j.error);
+    S.data = j; localStorage.setItem("unga.data", JSON.stringify(j)); toast("Agenda actualizada");
+  }catch(err){ if(!S.data) S.data = EMBEDDED; toast("Sem rede — a usar a última agenda guardada"); }
+}
+async function sendNote(n){
+  if(!CONFIG.API_URL){ await new Promise(r=>setTimeout(r,400)); return true; }
+  try{
+    const r = await fetch(CONFIG.API_URL, {method:"POST", headers:{"Content-Type":"text/plain"}, body: JSON.stringify({action:"nota", code:CONFIG.ACCESS_CODE, ...n})});
+    const j = await r.json(); return !j.error;
+  }catch{ return false; }
+}
+async function flushQueue(){
+  if(!S.queue.length) return;
+  const rest=[];
+  for(const n of S.queue){ if(await sendNote(n)) S.sent.push({...n, enviada:true}); else rest.push(n); }
+  S.queue = rest; persist(); if(!rest.length) toast("Notas em fila enviadas");
+}
+function persist(){ localStorage.setItem("unga.queue", JSON.stringify(S.queue)); localStorage.setItem("unga.sent", JSON.stringify(S.sent.slice(-100))); }
+
+/* ---------- render ---------- */
+function render(){
+  renderTop(); renderMain(); renderTabs();
+}
+function renderTop(){
+  const p = S.me===SECRET ? {Codigo:"SEC", Nome:"Secretariado"} : person(S.me);
+  $("#whoBtn").innerHTML = `${esc(p?p.Codigo:"—")} ${ICON.chevd}`;
+  const t = nowNY().date;
+  $("#days").innerHTML = CONFIG.WEEK.map(d=>{ const l=dayLabel(d); return `<button data-d="${d}" class="${d===S.day?"on":""} ${d===t?"today":""}"><b>${l.n}</b>${l.dow}</button>`; }).join("");
+  $("#days").style.display = (S.tab==="agenda"||S.tab==="geral") ? "" : "none";
+  const views = S.tab==="agenda" ? [["mine", S.me===SECRET?"Toda a comitiva":"A minha agenda"],["all","Todos os eventos"]] : [];
+  $("#views").innerHTML = views.map(([k,l])=>`<button data-v="${k}" class="${k===S.view?"on":""}">${l}</button>`).join("");
+  $("#views").style.display = views.length ? "" : "none";
+}
+function renderTabs(){
+  const t=[["agenda","Agenda",ICON.cal],["geral","Visão geral",ICON.map],["contactos","Contactos",ICON.book],["notas",S.me===SECRET?"Follow-up":"Notas",ICON.note]];
+  if(S.me===SECRET) t.push(["importar","Importar",ICON.up]);
+  $("#tabs").innerHTML = t.map(([k,l,i])=>`<button data-t="${k}" class="${k===S.tab?"on":""}">${i}<b>${l}</b></button>`).join("");
+}
+function renderMain(){
+  const m=$("#main");
+  if(S.tab==="agenda") m.innerHTML = viewAgenda();
+  else if(S.tab==="geral") m.innerHTML = viewGeral();
+  else if(S.tab==="contactos") m.innerHTML = viewContactos();
+  else if(S.tab==="importar") m.innerHTML = viewImport();
+  else m.innerHTML = viewNotas();
+}
+
+function evRow(e, opts={}){
+  const t = timed(e) ? `<b>${esc(e.Inicio)}</b>${e.Fim?esc(e.Fim):""}` : `<b>dia</b>${esc(e.Hora_texto==="Todo o dia"?"todo":(e.Hora_texto||"?"))}`;
+  const w = who(e);
+  const chips = w.length ? `<span class="chips">${w.map(c=>`<span class="chip ${c===S.me?"me":""}">${esc(c)}</span>`).join("")}</span>` : `<span class="st bad">sem pessoa atribuída</span>`;
+  const dim = opts.dim ? "dim":"";
+  return `<button class="ev ${dim}" data-id="${e.ID}">
+    <div class="t">${t}</div>
+    <div class="b">
+      <p class="n">${esc(e.Evento||e.Organizacao||"(sem título)")}</p>
+      <p class="m">${ICON.pin.replace("<svg",'<svg width="13" height="13" style="vertical-align:-2px"')} ${esc(placeName(e))} · <span class="st ${statusClass(e.Estado)}">${esc(statusPT(e.Estado))}</span></p>
+      <p class="m">${opts.showWho!==false ? chips : ""}${opts.extra||""}</p>
+    </div>
+    <span class="chev">${ICON.chev}</span>
+  </button>`;
+}
+
+function viewAgenda(){
+  const d=S.day;
+  const list = S.view==="mine" ? eventsFor(S.me,d) : S.data.eventos.filter(e=>onDay(e,d)).sort((a,b)=>(timed(a)?toMin(a.Inicio):-1)-(timed(b)?toMin(b.Inicio):-1));
+  if(!list.length) return `<div class="empty">Sem eventos ${S.view==="mine"?"atribuídos":""} em ${longDay(d)}.<br>Veja "Todos os eventos" para o que está a decorrer.</div>`;
+  const allDay = list.filter(e=>!timed(e)), tm = list.filter(timed);
+  let h="";
+  if(tm.length){
+    h += `<div class="card">`;
+    tm.forEach((e,i)=>{
+      const mine = isMine(e);
+      if(S.view==="mine" && S.me!==SECRET && i>0){
+        const tr = transit(tm[i-1], e);
+        if(tr) h += `<div class="gap ${tr.cls}">${tr.txt}</div>`;
+      }
+      const nc = (S.data.contactos||[]).filter(c=>c.ID_evento===e.ID).length;
+      h += evRow(e,{dim: S.view==="all" && !mine, extra: nc?` <span style="color:var(--ink-3)">· ${nc} contacto${nc>1?"s":""}</span>`:""});
+    });
+    h += `</div>`;
+  }
+  if(allDay.length){
+    h += `<p class="section-h">Todo o dia / vários dias</p><div class="card">${allDay.map(e=>evRow(e,{dim:S.view==="all"&&!isMine(e)})).join("")}</div>`;
+  }
+  if(S.view==="mine" && S.me!==SECRET){
+    const others = S.data.eventos.filter(e=>onDay(e,d)&&timed(e)&&!who(e).includes(S.me)&&who(e).length);
+    if(others.length) h += `<p class="section-h">Outros membros hoje</p><div class="card">${others.map(e=>evRow(e,{dim:true})).join("")}</div>`;
+  }
+  return h;
+}
+
+function viewGeral(){
+  const now = nowNY(); const d = S.day; const n = d===now.date ? now.min : null;
+  const showSim = S.me===SECRET || S.simNow || d!==nowNY().date;
+  let h = "";
+  if(showSim){
+    const v = S.simNow ? `${S.simNow.date}T${fmtMin(S.simNow.min)}` : `${d}T10:00`;
+    h += `<div class="sim">${ICON.clock.replace("<svg",'<svg width="15" height="15"')} <span>Simular hora:</span> <input type="datetime-local" id="simIn" value="${v}"> <button id="simGo">Aplicar</button>${S.simNow?`<button id="simOff">Repor</button>`:""}</div>`;
+  }
+  const ref = S.simNow && S.simNow.date===d ? S.simNow.min : n;
+  h += `<div class="card">`;
+  for(const p of people()){
+    const evs = eventsFor(p.Codigo,d).filter(timed);
+    let cur=null, next=null;
+    if(ref!=null){ cur = evs.find(e=>toMin(e.Inicio)<=ref && endOf(e)>ref); next = evs.find(e=>toMin(e.Inicio)>ref); }
+    else { next = evs[0]; }
+    const last = ref!=null ? [...evs].reverse().find(e=>endOf(e)<=ref) : null;
+    let main, sub, sub2="", cls="";
+    if(cur){ main = cur.Evento; sub = `${placeName(cur)} · até ${cur.Fim||fmtMin(endOf(cur))}`; }
+    else if(ref==null){ main = evs.length?`${evs.length} evento${evs.length>1?"s":""} em ${longDay(d)}`:"Sem eventos neste dia"; sub = evs.length?`primeiro às ${evs[0].Inicio} · ${placeName(evs[0])}`:""; cls="free"; }
+    else if(last && next && (ref-endOf(last))<=30){ main = last.Evento; sub = `terminou às ${last.Fim||fmtMin(endOf(last))} · ${placeName(last)}`; cls="free"; }
+    else { main = "Livre"; sub = next?`até às ${next.Inicio}`:"resto do dia"; cls="free"; }
+    if(next){
+      const tr = cur?transit(cur,next):(last?transit(last,next):null);
+      sub2 = `→ ${next.Inicio} ${esc(next.Evento)} · ${esc(placeName(next))}${tr&&tr.d!=null&&tr.d>0?` · ${tr.w} min a pé`:""}`;
+      if(tr && tr.cls==="bad") sub2 = `<span style="color:var(--bad)">${sub2}</span>`;
+    } else if(cur||ref!=null) sub2 = "Sem evento seguinte";
+    h += `<button class="person" data-p="${p.Codigo}"><div class="av ${cls}">${esc(p.Codigo)}</div><div class="b"><p class="n">${esc(main)}</p><p class="m">${esc(sub)}</p>${sub2?`<p class="m">${sub2}</p>`:""}</div><span class="chev">${ICON.chev}</span></button>`;
+  }
+  h += `</div>`;
+  // alertas
+  const al=[];
+  for(const p of people()){
+    const evs = eventsFor(p.Codigo,d).filter(timed);
+    for(let i=0;i<evs.length;i++) for(let j=i+1;j<evs.length;j++){
+      const a=evs[i], b=evs[j];
+      if(toMin(b.Inicio)<endOf(a)) al.push({cls:"warn", t:`Sobreposição ${p.Codigo}: ${a.Inicio} ${a.Evento} e ${b.Inicio} ${b.Evento}`});
+      else { const tr=transit(a,b); if(tr&&tr.cls==="bad"&&tr.gap>=0) al.push({cls:"warn", t:`${p.Codigo}: ${tr.w} min a pé entre ${a.Evento} e ${b.Evento}, só ${tr.gap} min de intervalo`}); }
+    }
+  }
+  const dayEv = S.data.eventos.filter(e=>onDay(e,d));
+  const noWho = dayEv.filter(e=>!who(e).length&&timed(e)).length;
+  if(noWho && S.me===SECRET) al.push({cls:"neu", t:`${noWho} evento${noWho>1?"s":""} de ${longDay(d)} sem pessoa atribuída`});
+  dayEv.filter(e=>who(e).length&&!venue(e.Venue_ID)).forEach(e=>al.push({cls:"bad", t:`${e.ID} sem local confirmado: ${e.Evento} (${e.Inicio||"hora?"})`}));
+  h += `<p class="section-h">Alertas · ${longDay(d)}</p>`;
+  h += al.length ? `<div class="alerts">${al.map(a=>`<div class="alert ${a.cls}">${ICON.warn}<span>${esc(a.t)}</span></div>`).join("")}</div>` : `<div class="alert neu">${ICON.info.replace("<svg",'<svg width="16" height="16" style="flex:none"')}<span>Sem conflitos detectados.</span></div>`;
+  return h;
+}
+
+function viewContactos(){
+  const cs = (S.data.contactos||[]).filter(c=>S.me===SECRET||!c.Quem_fala||c.Quem_fala.split(",").map(s=>s.trim()).includes(S.me));
+  if(!cs.length) return `<div class="empty">Ainda não há contactos atribuídos.<br>O secretariado preenche-os na folha "Contactos".</div>`;
+  const byEv = {};
+  cs.forEach(c=>{ (byEv[c.ID_evento] ||= []).push(c); });
+  return Object.entries(byEv).map(([id,list])=>{
+    const e = S.data.eventos.find(x=>x.ID===id);
+    return `<p class="section-h">${e?`${longDay(e.Data_inicio)} · ${esc(e.Evento)}`:esc(id)}</p><div class="card" style="padding:12px 14px">${list.map(c=>`<div class="contact"><div class="av">${esc(initials(c.Nome))}</div><div><p><b>${esc(c.Nome)}</b>${c.Prioridade?` <span class="st ${/alta/i.test(c.Prioridade)?"bad":"neu"}">${esc(c.Prioridade)}</span>`:""}</p><p class="s">${esc([c.Cargo,c.Organizacao].filter(Boolean).join(", "))}${c.Objetivo_da_conversa?` · ${esc(c.Objetivo_da_conversa)}`:""}</p></div></div>`).join("")}</div>`;
+  }).join("");
+}
+const initials = n => String(n||"").split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0]).join("").toUpperCase()||"?";
+
+function viewNotas(){
+  if(S.me===SECRET){
+    const fu = (S.data.followup||[]);
+    if(!fu.length && !S.sent.length) return `<div class="empty">Ainda não há notas de follow-up.<br>Aparecem aqui assim que a comitiva as enviar.</div>`;
+    const rows = [...fu.map(n=>({...n})), ...S.sent.filter(n=>!fu.find(f=>f.Timestamp===n.Timestamp)).map(n=>({...n, Estado:"Pendente"}))].sort((a,b)=>String(b.Timestamp).localeCompare(String(a.Timestamp)));
+    return `<div class="card" style="overflow:auto"><table class="fu"><tr><th>Hora</th><th>De</th><th>Nota</th><th>Estado</th></tr>${rows.map(n=>`<tr><td style="white-space:nowrap;color:var(--ink-2)">${esc(String(n.Timestamp).slice(5,16).replace("T"," "))}</td><td>${esc(n.Autor)}</td><td><b style="font-weight:600">${esc(n.Evento)}</b><br>${esc(n.Nota)}</td><td><span class="st ${/conclu/i.test(n.Estado)?"ok":/curso/i.test(n.Estado)?"warn":"bad"}">${esc(n.Estado||"Pendente")}</span></td></tr>`).join("")}</table></div><p class="section-h" style="font-weight:400">Estado e responsável editam-se na folha "Follow-up".</p>`;
+  }
+  const mine = [...S.queue.map(n=>({...n,fila:true})), ...S.sent.filter(n=>n.Autor===S.me)].reverse();
+  if(!mine.length) return `<div class="empty">Ainda não enviou notas.<br>Abra um evento e escreva o que o secretariado deve seguir.</div>`;
+  return `<div class="card">${mine.map(n=>`<div class="note"><div class="h"><span>${esc(String(n.Timestamp).slice(5,16).replace("T"," "))}</span><span class="st ${n.fila?"warn":"ok"}">${n.fila?"em fila — sem rede":"enviada"}</span></div><p class="x">${esc(n.Nota)}</p><p class="e">${esc(n.Evento)}</p></div>`).join("")}</div>${S.queue.length?`<button class="btn sec" id="retry">Tentar enviar de novo</button>`:""}`;
+}
+
+
+/* ---------- importação do Excel ---------- */
+const IMP = { rows:null, preview:null, err:"" };
+function viewImport(){
+  let h = `<div class="card" style="padding:14px">
+  <p style="margin:0 0 4px;font-weight:600">Actualizar a agenda a partir do Excel</p>
+  <p style="margin:0 0 12px;font-size:13px;color:var(--ink-2)">Aceita o tracker original (colunas Date, Time (ET), Organization, Event…) ou a folha "Eventos" da base normalizada. Nos eventos que já existem, o Excel actualiza o que traz preenchido; o que vier vazio (quem vai, objectivo, local corrigido, notas) mantém o valor actual.</p>
+  <input type="file" id="xlsIn" accept=".xlsx,.xls,.csv" style="display:block;width:100%;font-size:13px">
+  ${IMP.err?`<p class="err">${esc(IMP.err)}</p>`:""}
+  </div>`;
+  if(IMP.preview){
+    const p=IMP.preview;
+    h += `<p class="section-h">Pré-visualização</p><div class="card" style="padding:14px;font-size:13.5px">
+    <p style="margin:0 0 6px"><b style="font-weight:600">${p.total}</b> eventos lidos · <b style="font-weight:600">${p.novos}</b> novos · <b style="font-weight:600">${p.alterados}</b> alterados · <b style="font-weight:600">${p.iguais}</b> sem alteração${p.removidos?` · <span style="color:var(--bad)">${p.removidos} deixam de existir</span>`:""}</p>
+    <p style="margin:0 0 6px;color:var(--ink-2)">${p.semHora} sem hora exacta · ${p.semLocal} sem local identificado</p>
+    ${p.lista.length?`<ul style="margin:8px 0 0;padding-left:18px;color:var(--ink-2)">${p.lista.slice(0,12).map(x=>`<li>${esc(x)}</li>`).join("")}${p.lista.length>12?`<li>… e mais ${p.lista.length-12}</li>`:""}</ul>`:""}
+    <button class="btn" id="impApply">${CONFIG.API_URL?"Enviar para a folha Google":"Aplicar neste dispositivo"}</button>
+    ${!CONFIG.API_URL?`<p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-3)">Sem o Apps Script ligado, a importação fica só neste dispositivo — serve para testar.</p>`:""}
+    </div>`;
+  }
+  return h;
+}
+function loadXLSX(){ return window.XLSX ? Promise.resolve() : new Promise((res,rej)=>{ const s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"; s.onload=res; s.onerror=()=>rej(new Error("Não foi possível carregar o leitor de Excel (sem rede?)")); document.head.appendChild(s); }); }
+async function importFile(file){
+  IMP.err=""; IMP.preview=null;
+  try{
+    await loadXLSX();
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, {type:"array", codepage:1252, cellDates:false});
+    let sheet = wb.Sheets["Eventos"] || wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet,{header:1,raw:false,defval:""});
+    const hi = rows.findIndex(r=>r.some(c=>/^Time \(ET\)/i.test(String(c))) || (r.includes("ID")&&r.includes("Data_inicio")));
+    if(hi<0) throw new Error("Não reconheci as colunas. Esperava 'Date / Time (ET) / Organization / Event…' ou 'ID / Data_inicio / …'.");
+    const hdr = rows[hi].map(s=>String(s).trim());
+    const body = rows.slice(hi+1).filter(r=>r.some(c=>String(c).trim()));
+    const raw = hdr.includes("Time (ET)");
+    const evs = raw ? parseRaw(hdr, body) : parseNorm(hdr, body);
+    IMP.preview = buildPreview(evs);
+  }catch(e){ IMP.err = e.message||String(e); }
+  renderMain();
+}
+const col = (hdr,names) => { for(const n of names){ const i=hdr.findIndex(h=>h.toLowerCase().startsWith(n.toLowerCase())); if(i>=0) return i; } return -1; };
+function parseRaw(hdr, body){
+  const c = { date:col(hdr,["Date"]), time:col(hdr,["Time"]), org:col(hdr,["Organization"]), ev:col(hdr,["Event"]), top:col(hdr,["Topics"]), place:col(hdr,["Place"]), rsvp:col(hdr,["RSVP"]), dead:col(hdr,["Registration"]), det:col(hdr,["Other details"]), link:col(hdr,["Link"]), st:col(hdr,["Status"]), att:col(hdr,["Attendance"]) };
+  const g=(r,k)=> c[k]>=0 ? String(r[c[k]]??"").trim() : "";
+  const out=[];
+  for(const r of body){
+    if(!g(r,"time")) continue;
+    const [d0,d1]=parseDateRaw(g(r,"date")); const [ht,st,en]=parseTimeRaw(g(r,"time"));
+    let det=g(r,"det"); const fm=det.match(/Format:\s*([\w-]+)/); const fmt=fm?fm[1]:""; det=det.replace(/Format:\s*[\w-]+;?/,"").trim();
+    out.push({ Data_inicio:d0, Data_fim:d1, Inicio:st, Fim:en, Hora_texto:ht, Organizacao:g(r,"org"), Evento:g(r,"ev"), Venue_ID:venueGuess(g(r,"place")), Local_original:g(r,"place"), Quem_vai:codesFrom(g(r,"att")), Objetivo:"", Estado:g(r,"st")||"To review", RSVP:g(r,"rsvp"), Prazo_registo:g(r,"dead"), Detalhes:det, Link:g(r,"link"), Temas:g(r,"top").replace(/\s*\n\s*/g," "), Formato:fmt, Notas_secretariado:g(r,"att") });
+  }
+  return out;
+}
+function parseNorm(hdr, body){
+  return body.map(r=>{ const o={}; hdr.forEach((h,i)=>{ if(h) o[h]=String(r[i]??"").trim(); }); return o; }).filter(o=>o.Evento||o.Organizacao);
+}
+function parseDateRaw(d){ const m=String(d).match(/(\d{1,2})\s*[–-]?\s*(\d{0,2})\s*Sep/i); if(!m) return ["",""]; const a=+m[1], b=m[2]?+m[2]:a; return [`2026-09-${String(a).padStart(2,"0")}`,`2026-09-${String(b).padStart(2,"0")}`]; }
+function parseTimeRaw(t){
+  t=String(t).replace(/\n/g," ").trim();
+  if(/^all day/i.test(t)) return ["Todo o dia","",""];
+  const ms=[...t.matchAll(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/gi)].filter(m=>+m[1]<=12);
+  if(!ms.length) return [t,"",""];
+  const hm=(m,ap)=>{ let h=+m[1], mi=+(m[2]||0); if(ap==="pm"&&h!==12) h+=12; if(ap==="am"&&h===12) h=0; return `${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}`; };
+  const a=ms[0], b=ms[1]; let apb=b&&b[3]?b[3].toLowerCase():""; let apa=a[3]?a[3].toLowerCase():apb;
+  if(!apa) return [t,"",""]; if(b&&!apb) apb=apa;
+  let st=hm(a,apa), en=b?hm(b,apb):"";
+  if(b&&en<st&&apa===apb&&!a[3]) st=hm(a,apb==="pm"?"am":apa);
+  return ["",st,en];
+}
+const VENUE_KEYS=[["UNHQ","unhq"],["YALE","yale"],["HARV","harvard"],["CORN","cornell club"],["PENN","penn club"],["UCLUB","university club"],["MARQ","marquis"],["JAPAN","japan society"],["SCAND","scandinavia"],["ROCK","rockefeller foundation"],["WCM","weill"],["CURE","cure"],["CURE","345, park"],["CURE","345 park"],["GATHER","studio gather"],["DEVEX","devex"],["BRYANT","bryant"],["LANGHAM","langham"],["MCNY","museum of the city"],["NYAM","academy of medicine"],["SKIRB","skirball"],["STEEL","steelcase"],["EUDEL","eu delegation"],["DKCON","denmark"],["CATH","cath"],["RENTS","renaissance"],["MEETG","meeting galleries"],["RIVER","river club"],["BEALE","beale"],["WHEEL","wheeltapper"],["ONLINE","online"],["NYC","new york city"]];
+function venueGuess(p){ const s=String(p).toLowerCase(); for(const [id,k] of VENUE_KEYS) if(s.includes(k)) return id; for(const v of S.data.venues){ if(v.Nome && s.includes(String(v.Nome).toLowerCase().slice(0,12))) return v.Venue_ID; } return ""; }
+function codesFrom(a){ const s=String(a).toLowerCase(); const out=[]; for(const p of people()){ const keys=[p.Codigo.toLowerCase(), ...String(p.Nome).toLowerCase().split(/\s+/).filter(w=>w.length>3)]; if(keys.some(k=>s.includes(k))) out.push(p.Codigo); } return out.join(", "); }
+const evKey = e => `${e.Data_inicio}|${String(e.Evento||"").toLowerCase().replace(/\s+/g," ").trim()}`;
+function buildPreview(evs){
+  const cur = new Map(S.data.eventos.map(e=>[evKey(e),e]));
+  let maxId = Math.max(0,...S.data.eventos.map(e=>+String(e.ID).replace(/\D/g,"")||0));
+  const merged=[], lista=[]; let novos=0, alterados=0, iguais=0;
+  const seen=new Set();
+  for(const n of evs){
+    const k=evKey(n); const old=cur.get(k);
+    if(old){
+      seen.add(k); const m={...old};
+      let changed=false;
+      for(const f of Object.keys(n)){ const v=String(n[f]??"").trim(); if(!v) continue; if(String(old[f]??"")!==v){ m[f]=v; changed=true; } }
+      if(changed){ alterados++; lista.push(`Alterado: ${n.Evento}`); } else iguais++;
+      merged.push(m);
+    } else { maxId++; merged.push({ID:`EV${String(maxId).padStart(3,"0")}`, ...n}); novos++; lista.push(`Novo: ${n.Evento||n.Organizacao} (${n.Data_inicio||"data?"})`); }
+  }
+  const removidos = S.data.eventos.filter(e=>!seen.has(evKey(e))).length;
+  S.data.eventos.filter(e=>!seen.has(evKey(e))).forEach(e=>lista.push(`Removido: ${e.Evento}`));
+  return { total:evs.length, novos, alterados, iguais, removidos, semHora:merged.filter(e=>!e.Inicio).length, semLocal:merged.filter(e=>!venue(e.Venue_ID)).length, lista, merged };
+}
+async function applyImport(){
+  const btn=$("#impApply"); btn.disabled=true; btn.textContent="A aplicar…";
+  const eventos = IMP.preview.merged;
+  if(CONFIG.API_URL){
+    try{
+      const r = await fetch(CONFIG.API_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"importar",code:CONFIG.ACCESS_CODE,eventos})});
+      const j = await r.json(); if(j.error) throw new Error(j.error);
+      await load(true); toast(`Folha actualizada: ${eventos.length} eventos`);
+    }catch(e){ IMP.err="Falhou o envio para a folha: "+(e.message||e); btn.disabled=false; btn.textContent="Tentar de novo"; renderMain(); return; }
+  } else {
+    S.data = {...S.data, eventos}; localStorage.setItem("unga.data", JSON.stringify(S.data)); toast(`Agenda actualizada neste dispositivo: ${eventos.length} eventos`);
+  }
+  IMP.preview=null; IMP.err=""; S.tab="agenda"; render();
+}
+
+/* ---------- pop-up do evento ---------- */
+function openEvent(id){
+  const e = S.data.eventos.find(x=>x.ID===id); if(!e) return;
+  const w = who(e), v = venue(e.Venue_ID);
+  const cs = (S.data.contactos||[]).filter(c=>c.ID_evento===id);
+  const code = S.me===SECRET ? (w[0]||null) : S.me;
+  const seq = code ? eventsFor(code, e.Data_inicio).filter(timed) : [];
+  const idx = seq.findIndex(x=>x.ID===id);
+  const next = idx>=0 ? seq[idx+1] : null;
+  const tr = next ? transit(e,next) : null;
+  const when = timed(e) ? `${e.Inicio}${e.Fim?"–"+e.Fim:""}` : (e.Hora_texto||"hora a confirmar");
+  const dateTxt = e.Data_inicio ? (e.Data_fim&&e.Data_fim!==e.Data_inicio ? `${longDay(e.Data_inicio)} – ${longDay(e.Data_fim)}` : longDay(e.Data_inicio)) : "data a confirmar";
+  let h = `<div class="grip"></div>
+  <div class="sh-top"><span>${ICON.cal.replace("<svg",'<svg width="14" height="14" style="vertical-align:-2px"')} ${esc(dateTxt)} · ${esc(when)}</span><span class="st ${statusClass(e.Estado)}">${esc(statusPT(e.Estado))}</span></div>
+  <h2>${esc(e.Evento||"(sem título)")}</h2>
+  <p class="org">${esc(e.Organizacao)}${e.Formato?` · ${esc(e.Formato)}`:""}</p>
+  <div class="row">${ICON.pin}<div><p>${esc(placeName(e))}</p><p class="s">${esc(v?v.Morada:(e.Local_original&&e.Local_original!==placeName(e)?e.Local_original:""))}${!v?'<span class="st bad" style="margin-left:6px">local por confirmar</span>':""}</p></div></div>`;
+  if(e.Detalhes||e.RSVP) h += `<div class="row">${ICON.info}<div>${e.Detalhes?`<p class="s">${esc(e.Detalhes)}</p>`:""}${e.RSVP?`<p class="s">RSVP: ${esc(e.RSVP)}</p>`:""}</div></div>`;
+  h += `<p class="lbl">Quem vai</p>${w.length?`<span class="chips">${w.map(c=>`<span class="chip ${c===S.me?"me":""}">${esc(c)}</span>`).join("")}</span>`:`<span class="st bad">ninguém atribuído</span>`}`;
+  if(e.Objetivo) h += `<p class="lbl">Objectivo</p><p style="margin:0">${esc(e.Objetivo)}</p>`;
+  h += `<p class="lbl">Com quem falar</p>`;
+  h += cs.length ? cs.map(c=>`<div class="contact"><div class="av">${esc(initials(c.Nome))}</div><div><p><b>${esc(c.Nome)}</b></p><p class="s">${esc([c.Cargo,c.Organizacao].filter(Boolean).join(", "))}${c.Objetivo_da_conversa?` · ${esc(c.Objetivo_da_conversa)}`:""}</p></div></div>`).join("") : `<p class="s" style="color:var(--ink-3);margin:0;font-size:13px">Ainda sem contactos definidos para este evento.</p>`;
+  if(next){
+    h += `<p class="lbl">A seguir${code&&S.me===SECRET?` (${esc(code)})`:""} · ${esc(next.Inicio)}</p><div class="next"><p><b style="font-weight:600">${esc(next.Evento)}</b></p><p class="s">${esc(placeName(next))}${tr?` · ${esc(tr.txt)}`:""}</p></div>`;
+  } else if(timed(e) && code){
+    h += `<p class="lbl">A seguir</p><div class="next"><p class="s">Último evento do dia.</p></div>`;
+  }
+  h += `<p class="lbl">Nota para o secretariado</p><textarea id="noteIn" placeholder="Ex.: enviar nota conceptual à Dra. X até sexta"></textarea><p class="err" id="noteErr" style="display:none"></p><p class="okmsg" id="noteOk" style="display:none"></p>
+  <button class="btn" id="noteSend">Enviar para follow-up</button>
+  <div class="links"><a href="${esc(mapsUrl(e))}" target="_blank" rel="noopener">Abrir no Maps</a>${/^https?:/.test(e.Link)?`<a href="${esc(e.Link)}" target="_blank" rel="noopener">Página do evento</a>`:""}</div>`;
+  $("#sheet").innerHTML = h;
+  $("#sheet").dataset.id = id;
+  $("#sheet").scrollTop = 0;
+  $("#veil").classList.add("on"); $("#sheet").classList.add("on");
+}
+function closeSheet(){ $("#veil").classList.remove("on"); $("#sheet").classList.remove("on"); }
+
+async function submitNote(){
+  const id = $("#sheet").dataset.id, e = S.data.eventos.find(x=>x.ID===id);
+  const txt = $("#noteIn").value.trim(), err=$("#noteErr"), ok=$("#noteOk"), btn=$("#noteSend");
+  if(!txt){ err.textContent="Escreva a nota antes de enviar."; err.style.display=""; return; }
+  err.style.display="none"; btn.disabled=true; btn.textContent="A enviar…";
+  const n = { Timestamp: new Date().toISOString().slice(0,16), Autor: S.me===SECRET?"SEC":S.me, ID_evento:id, Evento:e.Evento, Nota:txt };
+  const sent = await sendNote(n);
+  if(sent){ S.sent.push({...n, enviada:true}); ok.textContent="Enviada. O secretariado vê-a na folha Follow-up."; ok.style.display=""; $("#noteIn").value=""; }
+  else { S.queue.push(n); ok.textContent="Sem rede: guardada em fila, será enviada assim que houver ligação."; ok.style.display=""; $("#noteIn").value=""; }
+  persist(); btn.disabled=false; btn.textContent="Enviar para follow-up";
+}
+
+/* ---------- lembretes ---------- */
+let reminderTimers=[];
+function scheduleReminders(){
+  reminderTimers.forEach(clearTimeout); reminderTimers=[];
+  if(!("Notification" in window) || Notification.permission!=="granted" || S.me===SECRET) return;
+  const now = nowNY(); if(S.simNow) return;
+  eventsFor(S.me, now.date).filter(timed).forEach(e=>{
+    const ms = (toMin(e.Inicio)-15-now.min)*60000;
+    if(ms>0 && ms<12*3600000) reminderTimers.push(setTimeout(()=>{
+      const seq=eventsFor(S.me,now.date).filter(timed), i=seq.findIndex(x=>x.ID===e.ID), prev=seq[i-1], tr=prev?transit(prev,e):null;
+      new Notification(`Em 15 min: ${e.Evento}`, { body: `${placeName(e)}${tr&&tr.w?` · ${tr.w} min a pé`:""}` });
+    }, ms));
+  });
+}
+
+/* ---------- gate ---------- */
+function renderGate(){
+  const g=$("#gate");
+  if(S.me && (!CONFIG.ACCESS_CODE || localStorage.getItem("unga.code")===CONFIG.ACCESS_CODE)){ g.style.display="none"; return; }
+  g.style.display="";
+  g.innerHTML = `<h1>UNGA81</h1><p>Agenda da comitiva · 21–25 de Setembro, Nova Iorque</p>
+  ${CONFIG.ACCESS_CODE?`<input id="codeIn" placeholder="Código de acesso" autocomplete="off" inputmode="text"><p class="err" id="codeErr" style="display:none;margin-bottom:8px">Código incorrecto.</p>`:""}
+  <p style="font-size:13px;margin-bottom:8px">Quem é?</p>
+  ${people().map(p=>`<button class="opt" data-me="${esc(p.Codigo)}"><span class="av">${esc(p.Codigo)}</span><span>${esc(p.Nome)}</span></button>`).join("")}
+  <button class="opt" data-me="${SECRET}"><span class="av" style="background:var(--ink-2)">SEC</span><span>Secretariado</span></button>`;
+}
+
+/* ---------- eventos de UI ---------- */
+document.addEventListener("click", async ev=>{
+  const t = ev.target.closest("button,a");
+  if(!t) { if(ev.target===$("#veil")) closeSheet(); return; }
+  if(t.dataset.me!=null){
+    if(CONFIG.ACCESS_CODE){ const c=($("#codeIn").value||"").trim(); if(c!==CONFIG.ACCESS_CODE){ $("#codeErr").style.display=""; return; } localStorage.setItem("unga.code",c); }
+    S.me=t.dataset.me; localStorage.setItem("unga.me",S.me); S.view="mine"; renderGate(); render(); scheduleReminders();
+    if("Notification" in window && Notification.permission==="default" && S.me!==SECRET) Notification.requestPermission().then(scheduleReminders);
+    return;
+  }
+  if(t.id==="whoBtn"){ S.me=""; renderGate(); return; }
+  if(t.dataset.d){ S.day=t.dataset.d; render(); return; }
+  if(t.dataset.v){ S.view=t.dataset.v; render(); return; }
+  if(t.dataset.t){ S.tab=t.dataset.t; if(S.tab==="notas"&&S.me===SECRET&&CONFIG.API_URL) await load(true); render(); return; }
+  if(t.dataset.id){ openEvent(t.dataset.id); return; }
+  if(t.dataset.p){ S.tab="agenda"; const keep=S.me; S.view="all"; render(); return; }
+  if(t.id==="noteSend"){ submitNote(); return; }
+  if(t.id==="impApply"){ applyImport(); return; }
+  if(t.id==="retry"){ await flushQueue(); render(); return; }
+  if(t.id==="simGo"){ const v=$("#simIn").value; if(v){ S.simNow={date:v.slice(0,10), min:toMin(v.slice(11,16))}; S.day=S.simNow.date; render(); } return; }
+  if(t.id==="simOff"){ S.simNow=null; render(); return; }
+});
+document.addEventListener("change", e=>{ if(e.target.id==="xlsIn" && e.target.files[0]) importFile(e.target.files[0]); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeSheet(); });
+document.addEventListener("input", e=>{ if(e.target.id==="noteIn"){ $("#noteErr").style.display="none"; $("#noteOk").style.display="none"; } });
+let py=0; $("#sheet").addEventListener("touchstart",e=>{py=e.touches[0].clientY;},{passive:true});
+$("#sheet").addEventListener("touchend",e=>{ if($("#sheet").scrollTop<=0 && e.changedTouches[0].clientY-py>80) closeSheet(); });
+window.addEventListener("online", flushQueue);
+function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("on"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("on"),2600); }
+
+/* ---------- arranque ---------- */
+(async function(){
+  await load(false);
+  const n = nowNY(); S.day = CONFIG.WEEK.includes(n.date) ? n.date : CONFIG.WEEK[1];
+  renderGate(); render(); flushQueue(); scheduleReminders();
+  setInterval(()=>{ if(S.tab==="geral") renderMain(); }, 60000);
+})();
+</script>
+</body>
+</html>
